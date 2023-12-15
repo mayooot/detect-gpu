@@ -29,3 +29,34 @@ Usage of ./detect-gpu-linux-amd64:
       --port string      Port of detect server, format :port (default ":2376")
 pflag: help requested
 ```
+
+## 在 Go 项目中使用
+
+使用标准的go get命令可以获得 `detect-gpu`
+通过运行：
+```
+go get github.com/mayooot/detect-gpu/pkg/detect 
+```
+### 简单的例子
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/mayooot/detect-gpu/pkg/detect"
+)
+
+func main() {
+	infos, err := detect.DetectGpu()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	for _, info := range infos {
+		fmt.Printf("%+v\n", info)
+	}
+}
+
+```
