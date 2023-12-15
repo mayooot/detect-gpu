@@ -1,0 +1,6 @@
+github.com/NVIDIA/go-nvml v0.12.0-1 h1:6mdjtlFo+17dWL7VFPfuRMtf0061TF4DKls9pkSw6uM=
+github.com/NVIDIA/go-nvml v0.12.0-1/go.mod h1:hy7HYeQy335x6nEss0Ne3PYqleRa6Ct+VKD9RQ4nyFs=
+github.com/ngaut/log v0.0.0-20221012222132-f3329cba28a5 h1:xIBY4Eci2hOJJLZLbQ9g/Uuq+V6QLiOBi1mZzqZyqOY=
+github.com/ngaut/log v0.0.0-20221012222132-f3329cba28a5/go.mod h1:ueVCjKQllPmX7uEvCYnZD5b8qjidGf1TCH61arVe4SU=
+github.com/spf13/pflag v1.0.5 h1:iy+VFUOCP1a+8yFto/drg2CJ5u0yRoB7fZw3DKv/JXA=
+github.com/spf13/pflag v1.0.5/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An2Bg=
