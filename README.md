@@ -2,6 +2,7 @@
 
 使用 [go-nvml](https://github.com/NVIDIA/go-nvml) 库，获取宿主机的 GPU 信息。
 
+有用的话点个 Star 吧~ 🌸
 
 ## Q&A
 
