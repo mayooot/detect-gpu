@@ -3,32 +3,40 @@
 ![license](https://img.shields.io/hexpm/l/plug.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mayooot/detect-gpu)](https://goreportcard.com/report/github.com/mayooot/detect-gpu)
 
-[简体中文](/docs/zh-cn.md)
+[English](..%2FREADME.md)
 
-# Overview
+# 概述
 
-`detect-gpu` is a HTTP server that calls [go-nvml](https://github.com/NVIDIA/go-nvml) and provides an api to get
-information about the NVIDIA GPU on a Linux server.
+调用 [go-nvml](https://github.com/NVIDIA/go-nvml)，获取 Linux GPU服务器上的 NVIDIA GPU 信息，并以 API 的形式暴露。
 
-Because we may use macOS or Windows for development, but [go-nvml](https://github.com/NVIDIA/go-nvml) needs Linux NVIDIA
-driver, so it will report error during development.
+因为开发时可能使用 mac 或者 windows 系统，但是 go-nvml 需要 Linux NVIDIA 的驱动，所以开发时会报错。
 
-And we split it out as a standalone HTTP service so that we can compile and run the main application successfully even
-in an environment without NVIDIA drivers.
+所以把它拆分出来，作为一个独立的 HTTP 服务，这样即使在没有 NVIDIA 驱动的环境中，也可以成功编译和运行主要应用程序。
 
 - [Detect-GPU](#detect-gpu)
-- [Overview](#Overview)
-- [Quick Start](#quick-start)
-- [Build from source](#build-from-source)
-- [Test](#test)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contribute](#contribute)
+- [概述](#概述)
+- [快速开始](#快速开始)
+    - [从源码构建](#从源码构建)
+    - [运行](#运行)
+    - [测试](#测试)
+    - [使用](#使用)
+- [在Go项目中引用](#在Go项目中引用)
+    - [简单的例子](#简单的例子)
+- [贡献代码](#贡献代码)
 
-# Quick Start
+# 快速开始
 
-Downloading the binary executable from [release](https://github.com/mayooot/detect-gpu/releases).
-And run it.
+## 从源码构建
+
+```shell
+$ git clone https://github.com/mayooot/detect-gpu
+$ cd detect-gpu
+$ make linux
+```
+
+## 运行
+
+如果需要的话，可以指定参数
 
 ```shell
 $ ./detect-gpu-linux-amd64 -h
@@ -39,10 +47,15 @@ Usage of ./detect-gpu-linux-amd64:
 pflag: help requested
 
 $ ./detect-gpu-linux-amd64
-2024/01/03 22:36:26 stat.go:30: [info] detect server start success, listen on :2376
 ```
 
-Send a GET request using cURL or any language.
+## 测试
+
+```shell
+go test -v pkg/detect/*
+```
+
+## 使用
 
 ```shell
 $ curl 127.0.0.1:2376/api/v1/detect/gpu
@@ -84,31 +97,15 @@ $ curl 127.0.0.1:2376/api/v1/detect/gpu
 ]
 ```
 
-# Build from source
+# 在Go项目中引用
 
-```shell
-$ git clone https://github.com/mayooot/detect-gpu
-$ cd detect-gpu
-$ make linux
-```
-
-# Test
-
-```shell
-go test -v pkg/detect/*
-```
-
-# Installation
-
-`detect-gpu` is available using the standard go get command.
-
-Install by running:
+使用标准的 go get 命令可以获得 `detect-gpu`。
 
 ```shell
 $ go get github.com/mayooot/detect-gpu/pkg/detect 
 ```
 
-# Usage
+## 简单的例子
 
 ```go
 package main
@@ -132,6 +129,6 @@ func main() {
 }
 ```
 
-# Contribute
+# 贡献代码
 
-Feel free to open issues and pull requests. Any feedback is highly appreciated!
+欢迎贡献代码或 issue!
