@@ -12,7 +12,7 @@ import (
 var (
 	port    = flag.StringP("port", "p", ":2376", "Port of detect server, format :port")
 	pattern = flag.StringP("pattern", "r", "/api/v1/detect/gpu", "Pattern of detect server")
-	td      = flag.DurationP("td", "t", 5*time.Second, "Time duration for detect gpu")
+	td      = flag.DurationP("td", "t", 5*time.Second, "Timeout duration for detect gpu")
 )
 
 func main() {
