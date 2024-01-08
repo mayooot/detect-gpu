@@ -7,7 +7,7 @@
 
 # Overview
 
-`detect-gpu` is a HTTP server that calls [go-nvml](https://github.com/NVIDIA/go-nvml) and provides an api to get
+`Detect-GPU` is an HTTP server that calls [go-nvml](https://github.com/NVIDIA/go-nvml) and provides an api to get
 information about the NVIDIA GPU on a Linux server.
 
 Because we may use macOS or Windows for development, but [go-nvml](https://github.com/NVIDIA/go-nvml) needs Linux NVIDIA
@@ -31,15 +31,18 @@ Downloading the binary executable from [release](https://github.com/mayooot/dete
 And run it.
 
 ```shell
+$ ./detect-gpu-linux-amd64 
+2024/01/08 06:46:03 stat.go:60: [info] detect server start success, listen on 0.0.0.0:2376
+2024/01/08 06:46:03 stat.go:61: [info] detect gpu timeout: 1000 ms
+2024/01/08 06:46:03 stat.go:62: [info] ROUTES: 
+2024/01/08 06:46:03 stat.go:63: [info] GET              -->             /api/v1/detect/gpu
+
 $ ./detect-gpu-linux-amd64 -h
 Usage of ./detect-gpu-linux-amd64:
-  -r, --pattern string   Pattern of detect server (default "/api/v1/detect/gpu")
-  -p, --port string      Port of detect server, format :port (default ":2376")
-  -t, --td duration      Timeout duration for detect gpu (default 5s)
+  -a, --addr string        Address of detect server, format: ip:port, default: 0.0.0.0:2376 (default "0.0.0.0:2376")
+  -p, --path string        Path of detect server, default: /api/v1/detect/gpu (default "/api/v1/detect/gpu")
+  -t, --timeout duration   Timeout of detect gpu, default: 1s (default 1s)
 pflag: help requested
-
-$ ./detect-gpu-linux-amd64
-2024/01/03 22:36:26 stat.go:30: [info] detect server start success, listen on :2376
 ```
 
 Send a GET request using cURL or any language.
@@ -49,7 +52,7 @@ $ curl 127.0.0.1:2376/api/v1/detect/gpu
 [
     {
         "index":0,
-        "uuid":"GPU-uuid",
+        "uuid":"uuid",
         "name":"NVIDIA A100 80GB PCIe",
         "memoryInfo":{
             "Total":85899345920,
@@ -66,7 +69,7 @@ $ curl 127.0.0.1:2376/api/v1/detect/gpu
     },
     {
         "index":1,
-        "uuid":"GPU-uuid",
+        "uuid":"uuid",
         "name":"NVIDIA A100 80GB PCIe",
         "memoryInfo":{
             "Total":85899345920,
@@ -95,12 +98,12 @@ $ make linux
 # Test
 
 ```shell
-go test -v pkg/detect/*
+$ make test
 ```
 
 # Installation
 
-`detect-gpu` is available using the standard go get command.
+`Detect-GPU` is available using the standard go get command.
 
 Install by running:
 
@@ -110,26 +113,38 @@ $ go get github.com/mayooot/detect-gpu/pkg/detect
 
 # Usage
 
+You can refer to the [example](./examples/main.go) for usage.
+
+Like this:
+
 ```go
 package main
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/mayooot/detect-gpu/pkg/detect"
 )
 
 func main() {
-	infos, err := detect.DetectGpu(1 * time.Second)
-	if err != nil {
-		log.Fatal(err.Error())
+	timeOutDuration := 500 * time.Millisecond
+
+	testClient := detect.NewClient(detect.WithTimeout(timeOutDuration))
+	if err := testClient.Init(); err != nil {
+		panic(err)
 	}
-	for _, info := range infos {
-		fmt.Printf("%+v\n", info)
+	defer testClient.Close()
+
+	gpus, err := testClient.DetectGpu()
+	if err != nil {
+		panic(err)
+	}
+	for _, gpu := range gpus {
+		fmt.Printf("%#+v\n", gpu)
 	}
 }
+
 ```
 
 # Contribute
