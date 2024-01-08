@@ -6,25 +6,46 @@ import (
 	"time"
 
 	"github.com/NVIDIA/go-nvml/pkg/nvml"
-	"github.com/ngaut/log"
 )
 
-type gpuInfo struct {
-	Index                       int                `json:"index"`
-	UUID                        string             `json:"uuid"`
-	Name                        string             `json:"name"`
-	MemoryInfo                  nvml.Memory        `json:"memoryInfo"`
-	PowerUsage                  uint32             `json:"powerUsage"`
-	PowerState                  nvml.Pstates       `json:"powerState"`
-	PowerManagementDefaultLimit uint32             `json:"powerManagementDefaultLimit"`
-	InformImageVersion          string             `json:"informImageVersion"`
-	DriverVersion               string             `json:"systemGetDriverVersion"`
-	CUDADriverVersion           int                `json:"systemGetCudaDriverVersion"`
-	GraphicsRunningProcesses    []nvml.ProcessInfo `json:"tGraphicsRunningProcesses"`
+type Option func(c *Client)
+
+// Client calls nvml to query gpus
+type Client struct {
+	Timeout time.Duration
 }
 
-func DetectGpu(td time.Duration) ([]*gpuInfo, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), td)
+func NewClient(opts ...Option) *Client {
+	c := &Client{}
+	for _, apply := range opts {
+		apply(c)
+	}
+	return c
+}
+
+func WithTimeout(timeout time.Duration) Option {
+	return func(c *Client) {
+		c.Timeout = timeout
+	}
+}
+
+func (c *Client) Init() error {
+	if ret := nvml.Init(); ret != nvml.SUCCESS {
+		return fmt.Errorf("unable to initialize NVML: %v", nvml.ErrorString(ret))
+	}
+	return nil
+}
+
+func (c *Client) Close() error {
+	if ret := nvml.Shutdown(); ret != nvml.SUCCESS {
+		return fmt.Errorf("unable to shutdown NVML: %v", nvml.ErrorString(ret))
+	}
+	return nil
+}
+
+// DetectGpu return error if the timeout is exceeded
+func (c *Client) DetectGpu() ([]*gpuInfo, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), c.Timeout)
 	defer cancel()
 
 	resultCh := make(chan []*gpuInfo, 1)
@@ -49,16 +70,6 @@ func DetectGpu(td time.Duration) ([]*gpuInfo, error) {
 }
 
 func invokeNvml() ([]*gpuInfo, error) {
-	if ret := nvml.Init(); ret != nvml.SUCCESS {
-		return nil, fmt.Errorf("unable to initialize NVML: %v", nvml.ErrorString(ret))
-	}
-	defer func() {
-		ret := nvml.Shutdown()
-		if ret != nvml.SUCCESS {
-			log.Errorf("unable to shutdown NVML: %v", nvml.ErrorString(ret))
-		}
-	}()
-
 	count, ret := nvml.DeviceGetCount()
 	if ret != nvml.SUCCESS {
 		return nil, fmt.Errorf("unable to get gpuInfo count: %v", nvml.ErrorString(ret))
