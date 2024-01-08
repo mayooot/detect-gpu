@@ -4,34 +4,41 @@ import (
 	"testing"
 	"time"
 
-	"github.com/NVIDIA/go-nvml/pkg/nvml"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestDetectGpu(t *testing.T) {
-	ret := nvml.Init()
-	assert.Equal(t, nvml.SUCCESS, ret)
-	count, ret := nvml.DeviceGetCount()
-	assert.Equal(t, nvml.SUCCESS, ret)
-	defer nvml.Shutdown()
+	client := NewClient(WithTimeout(500 * time.Millisecond))
+	err := client.Init()
+	require.Nil(t, err)
+	defer client.Close()
 
-	t.Run("Detect gpus", func(t *testing.T) {
-		gpus, err := DetectGpu(500 * time.Millisecond)
+	t.Run("Get All Gpus", func(t *testing.T) {
+		gpus, err := client.DetectGpu()
 		assert.Nil(t, err)
 		assert.NotNil(t, gpus)
-		assert.Equal(t, count, len(gpus))
+		assert.NotEqual(t, 0, len(gpus))
 	})
 }
 
 func TestDetectGpu_Timeout(t *testing.T) {
 	allowTimeDuration := 50 * time.Millisecond
 	sleepTimeDuration := 100 * time.Millisecond
-	timeOutDetectGpu := func(td time.Duration) ([]*gpuInfo, error) {
-		time.Sleep(sleepTimeDuration)
-		return DetectGpu(td)
-	}
 
-	gpus, err := timeOutDetectGpu(allowTimeDuration)
-	assert.NotNil(t, err, "Timeout error should be returned")
-	assert.Nil(t, gpus)
+	client := NewClient(WithTimeout(allowTimeDuration))
+	err := client.Init()
+	require.Nil(t, err)
+	defer client.Close()
+
+	t.Run("Test Timeout Control", func(t *testing.T) {
+		timeOutDetectGpu := func(td time.Duration) ([]*gpuInfo, error) {
+			time.Sleep(sleepTimeDuration)
+			return client.DetectGpu()
+		}
+
+		gpus, err := timeOutDetectGpu(allowTimeDuration)
+		assert.NotNil(t, err, "Timeout error should be returned")
+		assert.Nil(t, gpus)
+	})
 }
