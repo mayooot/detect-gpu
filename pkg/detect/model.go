@@ -16,4 +16,5 @@ type gpuInfo struct {
 	DriverVersion               string             `json:"systemGetDriverVersion"`
 	CUDADriverVersion           int                `json:"systemGetCudaDriverVersion"`
 	GraphicsRunningProcesses    []nvml.ProcessInfo `json:"tGraphicsRunningProcesses"`
+	Utilization                 nvml.Utilization   `json:"utilization"`
 }

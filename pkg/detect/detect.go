@@ -143,6 +143,13 @@ func invokeNvml() ([]*gpuInfo, error) {
 		}
 		info.GraphicsRunningProcesses = computeRunningProcesses
 
+
+		utilization, ret := device.GetUtilizationRates()
+		if ret != nvml.SUCCESS {
+			return gpuInfos, fmt.Errorf("unable to get utilization rates of gpuInfo at index %d: %v", i, nvml.ErrorString(ret))
+		}
+		info.Utilization = utilization
+
 		gpuInfos = append(gpuInfos, info)
 	}
 	return gpuInfos, nil
