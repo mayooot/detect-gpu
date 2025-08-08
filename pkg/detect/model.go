@@ -9,6 +9,7 @@ type gpuInfo struct {
 	UUID                        string             `json:"uuid"`
 	Name                        string             `json:"name"`
 	MemoryInfo                  nvml.Memory        `json:"memoryInfo"`
+	MemoryInfoV2                nvml.Memory_v2     `json:"memoryInfoV2"`
 	PowerUsage                  uint32             `json:"powerUsage"`
 	PowerState                  nvml.Pstates       `json:"powerState"`
 	PowerManagementDefaultLimit uint32             `json:"powerManagementDefaultLimit"`

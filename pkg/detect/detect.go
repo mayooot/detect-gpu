@@ -101,6 +101,12 @@ func invokeNvml() ([]*gpuInfo, error) {
 		}
 		info.MemoryInfo = memoryInfo
 
+		memoryInfoV2, ret := device.GetMemoryInfo_v2()
+		if ret != nvml.SUCCESS {
+			return gpuInfos, fmt.Errorf("unable to get memory info v2 at index %d: %v", i, nvml.ErrorString(ret))
+		}
+		info.MemoryInfoV2 = memoryInfoV2
+
 		powerUsage, ret := device.GetPowerUsage()
 		if ret != nvml.SUCCESS {
 			return gpuInfos, fmt.Errorf("unable to get power usage of gpuInfo at index %d: %v", i, nvml.ErrorString(ret))
@@ -142,7 +148,6 @@ func invokeNvml() ([]*gpuInfo, error) {
 			return gpuInfos, fmt.Errorf("unable to get graphics running processes of gpuInfo at index %d: %v", i, nvml.ErrorString(ret))
 		}
 		info.GraphicsRunningProcesses = computeRunningProcesses
-
 
 		utilization, ret := device.GetUtilizationRates()
 		if ret != nvml.SUCCESS {
