@@ -50,43 +50,60 @@ Send a GET request using cURL or any language.
 ```shell
 $ curl 127.0.0.1:2376/api/v1/detect/gpu
 [
-    {
-        "index":0,
-        "uuid":"uuid",
-        "name":"NVIDIA A100 80GB PCIe",
-        "memoryInfo":{
-            "Total":85899345920,
-            "Free":63216877568,
-            "Used":22682468352
-        },
-        "powerUsage":74634,
-        "powerState":0,
-        "powerManagementDefaultLimit":300000,
-        "informImageVersion":"1001.0230.00.03",
-        "systemGetDriverVersion":"525.85.12",
-        "systemGetCudaDriverVersion":12000,
-        "tGraphicsRunningProcesses":[]
+  {
+    "index": 0,
+    "uuid": "GPU-3d55828f-bc3b-41cb-452d-30189d49dbeb",
+    "name": "NVIDIA vGPU-48GB",
+    "memoryInfo": {
+      "Total": 51527024640,
+      "Free": 50875727872,
+      "Used": 651296768
     },
-    {
-        "index":1,
-        "uuid":"uuid",
-        "name":"NVIDIA A100 80GB PCIe",
-        "memoryInfo":{
-            "Total":85899345920,
-            "Free":30687952896,
-            "Used":55211393024
-        },
-        "powerUsage":65507,
-        "powerState":0,
-        "powerManagementDefaultLimit":300000,
-        "informImageVersion":"1001.0230.00.03",
-        "systemGetDriverVersion":"525.85.12",
-        "systemGetCudaDriverVersion":12000,
-        "tGraphicsRunningProcesses":[]
+    "memoryInfoV2": {
+      "Version": 33554472,
+      "Total": 51527024640,
+      "Reserved": 651100160,
+      "Free": 50875727872,
+      "Used": 196608
+    },
+    "powerUsage": 94494,
+    "powerState": 0,
+    "powerManagementDefaultLimit": 450000,
+    "informImageVersion": "G002.0000.00.03",
+    "systemGetDriverVersion": "570.124.04",
+    "systemGetCudaDriverVersion": 12080,
+    "tGraphicsRunningProcesses": [],
+    "utilization": {
+      "Gpu": 0,
+      "Memory": 0
     }
+  }
 ]
 ```
-
+Simultaneously, run `nvidia-smi` to compare both outputs.
+```shell
+nvidia-smi 
+Fri Aug  8 17:54:21 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.124.04             Driver Version: 570.124.04     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA vGPU-48GB               On  |   00000000:C9:00.0 Off |                  Off |
+| 46%   49C    P0             94W /  450W |       1MiB /  49140MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+```
 # Build from source
 
 ```shell
