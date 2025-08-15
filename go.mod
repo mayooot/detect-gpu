@@ -7,7 +7,7 @@ require (
 	github.com/judwhite/go-svc v1.2.1
 	github.com/ngaut/log v0.0.0-20221012222132-f3329cba28a5
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.10.0
 )
 
 require (
