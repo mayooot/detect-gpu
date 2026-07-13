@@ -3,11 +3,11 @@ module github.com/mayooot/detect-gpu
 go 1.20
 
 require (
-	github.com/NVIDIA/go-nvml v0.12.0-1
+	github.com/NVIDIA/go-nvml v0.13.3-1
 	github.com/judwhite/go-svc v1.2.1
 	github.com/ngaut/log v0.0.0-20221012222132-f3329cba28a5
 	github.com/spf13/pflag v1.0.10
-	github.com/stretchr/testify v1.11.0
+	github.com/stretchr/testify v1.11.1
 )
 
 require (
